@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "568408910719",
+    "project_id": "lista-2cabc",
+    "storage_bucket": "lista-2cabc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568408910719:android:c55e4649c76cf6138e484a",
+        "android_client_info": {
+          "package_name": "com.example.trabalhofinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRuns-2N-QrZW8B6X0LTUcYaUXFGh9CKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568408910719:android:89d47d1f4afb6f978e484a",
+        "android_client_info": {
+          "package_name": "com.example.trabalhofinal.host"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRuns-2N-QrZW8B6X0LTUcYaUXFGh9CKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
