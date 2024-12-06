@@ -9,9 +9,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Lista de Contatos',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepPurple,
+        brightness: Brightness.light,
+        textTheme: const TextTheme(
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.deepPurple,
+          titleTextStyle: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Colors.deepPurple,
+          textTheme: ButtonTextTheme.primary,
+        ),
       ),
-      home: const ContatoListScreen(),
+      home: const TarefaListScreen(),
     );
   }
 }

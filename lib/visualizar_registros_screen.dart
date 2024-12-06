@@ -1,8 +1,7 @@
-// Importe o pacote necessario
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:trabalhofinal/contato.dart';
+import 'package:trabalhofinal/tarefa.dart';
 import 'package:trabalhofinal/DB_contato.dart' as db_contato;
 
 class VisualizarRegistrosScreen extends StatefulWidget {
@@ -14,7 +13,7 @@ class VisualizarRegistrosScreen extends StatefulWidget {
 }
 
 class _VisualizarRegistrosScreenState extends State<VisualizarRegistrosScreen> {
-  List<Contato> _contatos = [];
+  List<Tarefa> _tarefas = [];
 
   @override
   void initState() {
@@ -26,9 +25,9 @@ class _VisualizarRegistrosScreenState extends State<VisualizarRegistrosScreen> {
     final dbHelper = db_contato.DatabaseHelper();
     await dbHelper.open();
 
-    final contatos = await dbHelper.getContatos();
+    final tarefas = await dbHelper.getTarefas();
     setState(() {
-      _contatos = contatos;
+      _tarefas = tarefas;
     });
 
     dbHelper.close();
@@ -39,7 +38,7 @@ class _VisualizarRegistrosScreenState extends State<VisualizarRegistrosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registros do Banco'),
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -53,18 +52,22 @@ class _VisualizarRegistrosScreenState extends State<VisualizarRegistrosScreen> {
           child: Container(
             color: Colors.black.withOpacity(0.3),
             child: ListView.builder(
-              itemCount: _contatos.length,
+              itemCount: _tarefas.length,
               itemBuilder: (ctx, index) {
-                return ListTile(
-                  title: Text(
-                    _contatos[index].nome,
-                    style:
-                    const TextStyle(color: Colors.white), // Cor do texto é branca
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  subtitle: Text(
-                    _contatos[index].telefone,
-                    style:
-                    const TextStyle(color: Colors.white), // Cor do texto é branca
+                  child: ListTile(
+                    title: Text(
+                      _tarefas[index].titulo,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                    subtitle: Text(
+                      _tarefas[index].descricao,
+                      style: const TextStyle(color: Colors.black54),
+                    ),
                   ),
                 );
               },

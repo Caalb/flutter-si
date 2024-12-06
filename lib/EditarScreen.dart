@@ -1,48 +1,45 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:trabalhofinal/contato.dart';
+import 'package:trabalhofinal/tarefa.dart';
 
-class EditarContatoScreen extends StatefulWidget {
-  final Function(Contato) atualizarContato;
-  final Contato contatoExistente;
+class EditarTarefaScreen extends StatefulWidget {
+  final Function(Tarefa) atualizarTarefa;
+  final Tarefa tarefaExistente;
 
-  const EditarContatoScreen({super.key,
-    required this.atualizarContato,
-    required this.contatoExistente,
+  const EditarTarefaScreen({
+    super.key,
+    required this.atualizarTarefa,
+    required this.tarefaExistente,
   });
 
   @override
-  _EditarContatoScreenState createState() => _EditarContatoScreenState();
+  _EditarTarefaScreenState createState() => _EditarTarefaScreenState();
 }
 
-class _EditarContatoScreenState extends State<EditarContatoScreen> {
+class _EditarTarefaScreenState extends State<EditarTarefaScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nomeController = TextEditingController();
-  final _enderecoController = TextEditingController();
-  final _cpfController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _telefoneController = TextEditingController();
-  final _avatarUrlController = TextEditingController();
+  final _tituloController = TextEditingController();
+  final _descricaoController = TextEditingController();
+  final _dataVencimentoController = TextEditingController();
+  bool _concluida = false;
 
   @override
   void initState() {
     super.initState();
-    final contato = widget.contatoExistente;
-    _nomeController.text = contato.nome;
-    _enderecoController.text = contato.endereco ?? '';
-    _cpfController.text = contato.cpf ?? '';
-    _emailController.text = contato.email ?? '';
-    _telefoneController.text = contato.telefone ?? '';
-    _avatarUrlController.text = contato.avatarUrl ?? '';
+    final tarefa = widget.tarefaExistente;
+    _tituloController.text = tarefa.titulo;
+    _descricaoController.text = tarefa.descricao;
+    _dataVencimentoController.text = tarefa.dataVencimento.toIso8601String();
+    _concluida = tarefa.concluida;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Contato'),
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        title: const Text('Editar Tarefa'),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -52,10 +49,7 @@ class _EditarContatoScreenState extends State<EditarContatoScreen> {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: 3.0,
-              sigmaY:
-              3.0), // Ajuste o valor de sigmaX e sigmaY para controlar o nível de desfoque
+          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
             color: Colors.black.withOpacity(0.3),
             child: Padding(
@@ -64,80 +58,62 @@ class _EditarContatoScreenState extends State<EditarContatoScreen> {
                 key: _formKey,
                 child: ListView(
                   children: [
-                    TextFormField(
-                      controller: _nomeController,
-                      decoration: InputDecoration(
-                        labelText: 'Nome',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.6),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Digite o nome do contato';
-                        }
-                        return null;
+                    _buildTextField(
+                      controller: _tituloController,
+                      label: 'Título',
+                      icon: Icons.title,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      controller: _descricaoController,
+                      label: 'Descrição',
+                      icon: Icons.description,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      controller: _dataVencimentoController,
+                      label: 'Data de Vencimento',
+                      icon: Icons.calendar_today,
+                      isDate: true,
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Concluída'),
+                      value: _concluida,
+                      activeColor: const Color(0xFF6200EE),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _concluida = value ?? false;
+                        });
                       },
                     ),
-                    TextFormField(
-                      controller: _telefoneController,
-                      decoration: InputDecoration(
-                        labelText: 'Telefone',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.6),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Digite o Telefone do contato';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _enderecoController,
-                      decoration: InputDecoration(
-                        labelText: 'Endereço',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.6),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _cpfController,
-                      decoration: InputDecoration(
-                        labelText: 'CPF',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.6),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'E-mail',
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.6),
-                      ),
-                    ),
-                    // Outros campos (endereço, CPF, email, telefone, avatarUrl) aqui
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final novoContato = Contato(
-                            id: widget.contatoExistente.id,
-                            nome: _nomeController.text,
-                            endereco: _enderecoController.text,
-                            cpf: _cpfController.text,
-                            email: _emailController.text,
-                            telefone: _telefoneController.text,
-                            avatarUrl: _avatarUrlController.text,
+                          final tarefa = Tarefa(
+                            id: widget.tarefaExistente.id,
+                            titulo: _tituloController.text,
+                            descricao: _descricaoController.text,
+                            dataVencimento: DateTime.parse(_dataVencimentoController.text),
+                            concluida: _concluida,
                           );
 
-                          widget.atualizarContato(novoContato);
+                          widget.atualizarTarefa(tarefa);
                           Navigator.of(context).pop();
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        // ignore: deprecated_member_use
-                          backgroundColor: const Color.fromARGB(255, 212, 19, 5)),
-                      child: const Text('Salvar'),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        backgroundColor: const Color(0xFF6200EE),
+                      ),
+                      child: const Text(
+                        'Salvar',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
@@ -146,6 +122,40 @@ class _EditarContatoScreenState extends State<EditarContatoScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool isDate = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+      ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Por favor, preencha o campo $label.';
+        }
+        if (isDate) {
+          try {
+            DateTime.parse(value);
+          } catch (e) {
+            return 'Por favor, insira uma data válida.';
+          }
+        }
+        return null;
+      },
     );
   }
 }

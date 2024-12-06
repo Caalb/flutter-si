@@ -1,23 +1,21 @@
-//contato_list_screen.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:trabalhofinal/contato.dart';
+import 'package:trabalhofinal/tarefa.dart';
 import 'package:trabalhofinal/EditarScreen.dart' as edit;
 import 'package:trabalhofinal/AdicionarScreen.dart' as addScreen;
 import 'package:trabalhofinal/visualizar_registros_screen.dart';
-
 import 'DB_contato.dart';
 
-class ContatoListScreen extends StatefulWidget {
-  const ContatoListScreen({super.key});
+class TarefaListScreen extends StatefulWidget {
+  const TarefaListScreen({super.key});
 
   @override
-  _ContatoListScreenState createState() => _ContatoListScreenState();
+  _TarefaListScreenState createState() => _TarefaListScreenState();
 }
 
-class _ContatoListScreenState extends State<ContatoListScreen> {
+class _TarefaListScreenState extends State<TarefaListScreen> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  List<Contato> _contatos = [];
+  List<Tarefa> _tarefas = [];
 
   @override
   void initState() {
@@ -27,13 +25,13 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
 
   void _carregarRegistros() async {
     await _databaseHelper.open();
-    List<Contato> contatos = await _databaseHelper.getContatos();
+    List<Tarefa> tarefas = await _databaseHelper.getTarefas();
     setState(() {
-      _contatos = contatos;
+      _tarefas = tarefas;
     });
   }
 
-  Future<void> _confirmarRemoverContato(String id, String nome) async {
+  Future<void> _confirmarRemoverTarefa(String id, String titulo) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -43,7 +41,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Deseja realmente excluir o contato: $nome?'),
+                Text('Deseja realmente excluir a tarefa: $titulo?'),
               ],
             ),
           ),
@@ -57,7 +55,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
             TextButton(
               child: const Text('Confirmar'),
               onPressed: () {
-                _removerContato(id);
+                _removerTarefa(id);
                 Navigator.of(context).pop();
               },
             ),
@@ -67,7 +65,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
     );
   }
 
-  Future<void> _confirmarRemoverTodosContatos() async {
+  Future<void> _confirmarRemoverTodasTarefas() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -94,47 +92,47 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
     );
   }
 
-  void _adicionarContato(Contato novoContato) async {
-    await _databaseHelper.insertContato(novoContato);
-    _contatos = await _databaseHelper.getContatos();
+  void _adicionarTarefa(Tarefa novaTarefa) async {
+    await _databaseHelper.insertTarefa(novaTarefa);
+    _tarefas = await _databaseHelper.getTarefas();
 
     setState(() {});
   }
 
-  void _removerContato(String id) {
+  void _removerTarefa(String id) {
     setState(() {
-      _contatos.removeWhere((contato) => contato.id == id);
-      _databaseHelper.deleteContato(id);
+      _tarefas.removeWhere((tarefa) => tarefa.id == id);
+      _databaseHelper.deleteTarefa(id);
     });
   }
 
-  void _removerTodosContatos() {
+  void _removerTodasTarefas() {
     setState(() {
-      _contatos.clear();
-      _databaseHelper.deleteAllContatos();
+      _tarefas.clear();
+      _databaseHelper.deleteAllTarefas();
     });
   }
 
-  void _editarContato(Contato contatoExistente) {
+  void _editarTarefa(Tarefa tarefaExistente) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => edit.EditarContatoScreen(
-          atualizarContato: (novoContato) {
-            _atualizarContato(contatoExistente.id, novoContato);
+        builder: (ctx) => edit.EditarTarefaScreen(
+          atualizarTarefa: (novaTarefa) {
+            _atualizarTarefa(tarefaExistente.id, novaTarefa);
           },
-          contatoExistente: contatoExistente,
+          tarefaExistente: tarefaExistente,
         ),
       ),
     );
   }
 
-  void _atualizarContato(String id, Contato novoContato) {
-    _databaseHelper.editarContato(novoContato);
+  void _atualizarTarefa(String id, Tarefa novaTarefa) {
+    _databaseHelper.editarTarefa(novaTarefa);
     setState(() {
-      final index = _contatos.indexWhere((contato) => contato.id == id);
+      final index = _tarefas.indexWhere((tarefa) => tarefa.id == id);
 
       if (index != -1) {
-        _contatos[index] = novoContato;
+        _tarefas[index] = novaTarefa;
       }
     });
   }
@@ -143,14 +141,14 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de Contatos'),
+        title: const Text('Lista de Tarefas'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_forever),
             onPressed: () {
-              _confirmarRemoverTodosContatos();
+              _confirmarRemoverTodasTarefas();
             },
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: Colors.white,
           ),
           IconButton(
             icon: const Icon(Icons.list),
@@ -163,7 +161,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
             },
           ),
         ],
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -173,41 +171,42 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: 3.0,
-              sigmaY:
-              3.0), // Ajuste o valor de sigmaX e sigmaY para controlar o nível de desfoque
+          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
-            color: Colors.black.withOpacity(0.3), // Cor e opacidade do filtro
+            color: Colors.black.withOpacity(0.3),
             child: ListView.builder(
-              itemCount: _contatos.length,
+              itemCount: _tarefas.length,
               itemBuilder: (ctx, index) {
-                return ListTile(
-                  leading: const CircleAvatar(
-                    backgroundImage: AssetImage('assets/imagen/person.png'),
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  title: Text(_contatos[index].nome),
-                  textColor: const Color.fromARGB(255, 255, 255, 255),
-                  subtitle: Text(_contatos[index].telefone),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        color: Colors.amber,
-                        onPressed: () {
-                          _editarContato(_contatos[index]);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        color: const Color.fromARGB(255, 139, 5, 5),
-                        onPressed: () {
-                          _confirmarRemoverContato(
-                              _contatos[index].id, _contatos[index].nome);
-                        },
-                      ),
-                    ],
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      backgroundImage: AssetImage('assets/imagen/person.png'),
+                    ),
+                    title: Text(_tarefas[index].titulo),
+                    subtitle: Text(_tarefas[index].descricao),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          color: Colors.amber,
+                          onPressed: () {
+                            _editarTarefa(_tarefas[index]);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          color: Colors.red,
+                          onPressed: () {
+                            _confirmarRemoverTarefa(_tarefas[index].id, _tarefas[index].titulo);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -219,13 +218,13 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (ctx) => addScreen.AdicionarContatoScreen(
-                adicionarContato: _adicionarContato,
+              builder: (ctx) => addScreen.AdicionarTarefaScreen(
+                adicionarTarefa: _adicionarTarefa,
               ),
             ),
           );
         },
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        backgroundColor: const Color(0xFF6200EE),
         child: const Icon(Icons.add),
       ),
       drawer: Drawer(
@@ -234,7 +233,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 212, 19, 5),
+                color: Color(0xFF6200EE),
               ),
               child: Text(
                 'Menu',
@@ -247,8 +246,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
             ListTile(
               title: const Text('Sobre'),
               onTap: () {
-                // Adicionar navegação para a página "Sobre"
-                Navigator.pop(context); // Fecha o Drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -260,8 +258,7 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
             ListTile(
               title: const Text('Help'),
               onTap: () {
-                // Adicionar navegação para a página "Help"
-                Navigator.pop(context); // Fecha o Drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -277,7 +274,6 @@ class _ContatoListScreenState extends State<ContatoListScreen> {
   }
 }
 
-// Página "Sobre"
 class SobrePage extends StatelessWidget {
   const SobrePage({super.key});
 
@@ -286,7 +282,7 @@ class SobrePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sobre'),
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -296,10 +292,7 @@ class SobrePage extends StatelessWidget {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 3.0,
-            sigmaY: 3.0,
-          ),
+          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
             color: Colors.black.withOpacity(0.3),
             child: Padding(
@@ -340,15 +333,6 @@ class SobrePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   _buildMembro('Ana Júlia', 'assets/imagen/avatar1.png'),
-                  // const SizedBox(height: 20),
-                  // _buildMembro('Bianca Rangel', 'assets/imagen/avatar2.png'),
-                  // const SizedBox(height: 20),
-                  // _buildMembro('Pedro Henrique', 'assets/imagen/avatar3.jpg'),
-                  // const SizedBox(height: 20),
-                  // _buildMembro('Gabriel Ferreira', 'assets/imagen/avatar4.jpg'),
-                  // const SizedBox(height: 20),
-                  // _buildMembro('Lucas Gabriel', 'assets/imagen/avatar5.jpg'),
-                  // const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -378,7 +362,6 @@ class SobrePage extends StatelessWidget {
   }
 }
 
-// Página "Help"
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
@@ -387,7 +370,7 @@ class HelpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Help'),
-        backgroundColor: const Color.fromARGB(255, 212, 19, 5),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -397,10 +380,7 @@ class HelpPage extends StatelessWidget {
           ),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 3.0,
-            sigmaY: 3.0,
-          ),
+          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
             color: Colors.black.withOpacity(0.3),
             child: const Padding(

@@ -1,52 +1,51 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'contato.dart';
+import 'tarefa.dart';
 
 class DatabaseHelper {
   late FirebaseFirestore _database;
 
   Future<void> open() async {
-    // ignore: deprecated_member_use
     _database = FirebaseFirestore.instance;
   }
 
-  Future<void> insertContato(Contato contato) async {
+  Future<void> insertTarefa(Tarefa tarefa) async {
     await open();
     await _database
-        .collection("contatos").doc().set(contato.toMap())
+        .collection("tarefas").doc().set(tarefa.toMap())
         .onError((e, _) => print("Error writing document: $e"));
   }
 
-  Future<List<Contato>> getContatos() async {
+  Future<List<Tarefa>> getTarefas() async {
     try {
       await open();
-      final snapshot = await _database.collection("contatos").get();
+      final snapshot = await _database.collection("tarefas").get();
 
-      final contatos = snapshot.docs.map((e) => Contato.fromSnapshot(e)).toList();
+      final tarefas = snapshot.docs.map((e) => Tarefa.fromSnapshot(e)).toList();
 
-      return contatos;
+      return tarefas;
     } catch (e) {
-      print('Erro ao recuperar contatos: $e');
+      print('Erro ao recuperar tarefas: $e');
       return [];
     }
   }
 
-  Future<void> deleteContato(String id) async {
-    await _database.collection("contatos").doc(id).delete();
+  Future<void> deleteTarefa(String id) async {
+    await _database.collection("tarefas").doc(id).delete();
   }
 
-  Future<void> editarContato(Contato contatoAtualizado) async {
-    final docRef = _database.collection("contatos").doc(contatoAtualizado.id);
-    docRef.update(contatoAtualizado.toMap()).then(
+  Future<void> editarTarefa(Tarefa tarefaAtualizada) async {
+    final docRef = _database.collection("tarefas").doc(tarefaAtualizada.id);
+    docRef.update(tarefaAtualizada.toMap()).then(
             (value) => print("DocumentSnapshot successfully updated!"),
         onError: (e) => print("Error updating document $e"));
   }
 
-  Future<void> deleteAllContatos() async {
-    //await _database.collection("contatos").doc().;
+  Future<void> deleteAllTarefas() async {
+    // Implement the function to delete all tasks if needed
   }
 
   Future<void> close() async {
-    // Não precisa fechar a conexão no Firebase Realtime Database
+    // No need to close the connection in Firebase Firestore
   }
 }
