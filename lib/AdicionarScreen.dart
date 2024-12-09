@@ -152,6 +152,8 @@ class _AdicionarTarefaScreenState extends State<AdicionarTarefaScreen> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
       ),
       validator: (value) {
         if (value!.isEmpty) {

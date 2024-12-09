@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabalhofinal/contato_list_screen.dart';
+import 'package:trabalhofinal/tarefas_list_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

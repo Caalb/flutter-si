@@ -4,7 +4,7 @@ import 'package:trabalhofinal/tarefa.dart';
 import 'package:trabalhofinal/EditarScreen.dart' as edit;
 import 'package:trabalhofinal/AdicionarScreen.dart' as addScreen;
 import 'package:trabalhofinal/visualizar_registros_screen.dart';
-import 'DB_contato.dart';
+import 'DB_tarefa.dart';
 
 class TarefaListScreen extends StatefulWidget {
   const TarefaListScreen({super.key});
@@ -191,6 +191,10 @@ class _TarefaListScreenState extends State<TarefaListScreen> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(
+                          _tarefas[index].concluida ? Icons.check : Icons.close,
+                          color: _tarefas[index].concluida ? Colors.green : Colors.red,
+                        ),
                         IconButton(
                           icon: const Icon(Icons.edit),
                           color: Colors.amber,

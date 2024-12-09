@@ -142,6 +142,8 @@ class _EditarTarefaScreenState extends State<EditarTarefaScreen> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
       ),
       validator: (value) {
         if (value!.isEmpty) {
@@ -156,6 +158,12 @@ class _EditarTarefaScreenState extends State<EditarTarefaScreen> {
         }
         return null;
       },
+      onTap: isDate
+          ? () async {
+        FocusScope.of(context).requestFocus(FocusNode());
+        await _selectDate(context);
+      }
+          : null,
     );
   }
 }

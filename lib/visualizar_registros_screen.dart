@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:trabalhofinal/tarefa.dart';
-import 'package:trabalhofinal/DB_contato.dart' as db_contato;
+import 'package:trabalhofinal/DB_tarefa.dart' as db_contato;
 
 class VisualizarRegistrosScreen extends StatefulWidget {
   const VisualizarRegistrosScreen({super.key});
